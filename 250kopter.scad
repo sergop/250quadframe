@@ -14,11 +14,11 @@ frameW=45;
 frontW=frameW+52;
 rearW=frameW;
 tubeL=100;
-squareTubeL=116;
+squareTubeL=110;
 tubeLoffset=0;
-afterMotor=20;
+afterMotor=15;
 clampHfromC=10;
-tubeToMotor=-20;
+tubeToMotor=-15;
 escOffsetF=60.5;
 escOffsetR=66;
 propSize=6;
@@ -29,7 +29,10 @@ holesDR=142;
  
 m3boltHole=2.9;
  
-quadcopter();
+//quadcopter();
+frame();
+//translate([0,14.5,0]) 
+//pdb();
 
 module quadcopter() {
 //    rotate([180,0,0])
@@ -85,20 +88,26 @@ module frame() {
     l=frameL;
     difference() {
         union() { 
-            difference() {
+            *difference() {
                 frameContour(14);
                 frameContour(16,8);
                 openSquareTubes15();
                 cube([500,70,16], center=true);
             }
             translate([0,0,-8.5]) frameContour();
-            translate([0,0,8.5]) frameContour(); 
-            translate([0,0,26]) frameContour(2); 
-            color("grey") openSquareTubes15(); 
+//            translate([0,0,8.5]) frameContour(); 
+//            translate([0,0,26]) frameContour(2); 
+//            color("grey") openSquareTubes15(); 
         }   
         openSquareTubes15(); 
         translate([0,88,26]) 
         cube([100,100,5], center=true);
+        translate([0,25,-5.5]) 
+        cube([10,50,5], center=true);
+        for(x = [-25,25]) for(y = [-30,30])
+        translate([x,y,-8.5])
+        rotate([0,90,0])
+        cylinder(d=1.5, h=15, center=true, $fn=20);
         translate([0,0,8]) cylinder(d=1, h=5, center=true); 
     }
 }
@@ -151,41 +160,56 @@ module frameContour(h=3,d=10,ad=15) {
 
 module openSquareTubes15() {
     l=frameDiagonal;
-    tubeSide=15.3;
+    tubeSide=15.1;
     
     translate([(l+propOffset),-l,0]) 
     rotate([0,0,angle])
-    translate([0,squareTubeL/2-afterMotor,0]) 
-    cube([tubeSide,squareTubeL,tubeSide], center=true);
+    translate([0,squareTubeL/2-afterMotor,0]) {
+        cube([tubeSide,squareTubeL,tubeSide], center=true);
+        holes();
+    }
     
     translate([-(l+propOffset),-l,0]) 
     rotate([0,0,-angle])
-    translate([0,squareTubeL/2-afterMotor,0]) 
-    cube([tubeSide,squareTubeL,tubeSide], center=true);
+    translate([0,squareTubeL/2-afterMotor,0]) {
+        cube([tubeSide,squareTubeL,tubeSide], center=true);
+        holes();
+    }
     
     translate([-(l+propOffset),l,0]) 
     rotate([0,0,180+angle-angleOffset])
-    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0]) 
+    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0]) {
     cube([tubeSide,squareTubeL-tubeLoffset,tubeSide], center=true);
+        holes();
+    }
     
     translate([(l+propOffset),l,0]) 
     rotate([0,0,-180-angle+angleOffset])
-    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0]) 
+    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0]) {
     cube([tubeSide,squareTubeL-tubeLoffset,tubeSide], center=true); 
+        holes();
+    }
+    
+    module holes() {
+        for(x = [-5,5]) for(y = [52,42])
+        translate([x,y,0])
+        cylinder(d=3, h=50, center=true, $fn=30);
+    }
 }
 
 module escs() {
+    offset=17;
     color("black", 0.7) {
-        translate([15,0,-3.5])
+        translate([offset,0,-3.5])
         rotate([0,0,90])
         Xrotor20();
-        translate([-15,0,-3.5])
+        translate([-offset,0,-3.5])
         rotate([0,0,90])
         Xrotor20();
-        translate([15,0,3.5])
+        translate([offset,0,3.5])
         rotate([0,0,-90])
         Xrotor20();
-        translate([-15,0,3.5])
+        translate([-offset,0,3.5])
         rotate([0,0,-90])
         Xrotor20();
     }
@@ -331,4 +355,20 @@ module cc3d() {
 
 module cc3dAtom() {
     cube([22,38,12], center=true);
+}
+
+module pdb() {
+    for(y = [0:10:30])
+    translate([0,y,0])
+    cylinder(d=10, h=14, center=true, $fn=30);
+    translate([0,43,-3.5])
+    rotate([0,0,90])
+    xt60();
+}
+
+module xt60() {
+    hull() {
+        cube([15, 15, 2.6], center=true);
+        translate([0,(15-12)/2,0]) cube([15, 12, 7], center=true);
+    }
 }
