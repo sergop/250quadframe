@@ -31,50 +31,53 @@ m3boltHole=2.9;
  
 //quadcopter();
 frame();
-//translate([0,14.5,0]) 
-//pdb();
+//        translate([0,-14.8,0]) 
+//        rotate([0,0,180])
+//        pdb();
+//escs();
 
 module quadcopter() {
 //    rotate([180,0,0])
     frame();
     
-    translate([0,0,7.5]) 
-    openMotors(28,20,propOffset);
+//    translate([0,0,7.5]) 
+//    openMotors(28,20,propOffset);
     
-    color("blue", 0.8)
-    translate([0,-13,40])
-    %battery3S2200mah();
+//    color("blue", 0.8)
+//    translate([0,-13,41.5])
+//    rotate([0,90,0])
+//    %battery3S2200mah();
     
-    escs();
+//    escs();
 //    gopro();
     
     color("black", 0.9)
-    translate([13,-33,16.5])
+    translate([-13.8,-28,18])
     rotate([0,0,90])
     rx();
     
     color("green", 0.9)
-    translate([-10,-30,21])
-    rotate([0,0,90])
+    translate([9,-48,23.5])
+    rotate([0,0,-90])
     vtxTS5823();
 
     color("pink", 0.9)
-    translate([-10,-30,13.5])
+    translate([12,-40,15])
     rotate([0,0,90])
     bec();
 
     color("grey", 0.9)
-    translate([0,47,24])
-    rotate([18,0,0])
+    translate([0,47,29.5])
+    rotate([0,0,0])
     fpvcam();
     
-    color("black", 0.9)
-    translate([0,15,61])
-    mobius();
+//    color("black", 0.9)
+//    translate([0,15,61])
+//    mobius();
 
     color("yellow", 0.9)
-    translate([7,10,16])
-    rotate([0,0,90])
+    translate([9,5,16])
+//    rotate([0,0,90])
 //    cc3d();
     cc3dAtom();
 }
@@ -89,30 +92,85 @@ module frame() {
     difference() {
         union() { 
             *difference() {
-                frameContour(14);
-                frameContour(16,8);
+                frameContour(15);
+                frameContour(16,6);
                 openSquareTubes15();
                 cube([500,70,16], center=true);
             }
-            translate([0,0,-8.5]) frameContour();
-//            translate([0,0,8.5]) frameContour(); 
+            translate([0,0,19.5])
+            difference() {
+                frameContour(16);
+                frameContour(17,6); 
+            }
+//            translate([0,0,-9.5]) frameContour();
+            translate([0,0,9.5]) frameContour(); 
 //            translate([0,0,26]) frameContour(2); 
 //            color("grey") openSquareTubes15(); 
+            h=3;d=10;ad=15;
+            *translate([0,0,-8])
+            hull() {
+                translate([-frameW/2,-frameL/2,0])
+                rotate([0,0,90-angle])
+                translate([0,ad,0])
+                cylinder(d=d, h=h, center=true);
+                translate([frameW/2,-frameL/2,0])
+                rotate([0,0,-90+angle])
+                translate([0,ad,0])
+                cylinder(d=d, h=h, center=true);
+                translate([frameW/2,-frameL/2,0])
+                cylinder(d=d, h=h, center=true);
+                translate([-frameW/2,-frameL/2,0])
+                cylinder(d=d, h=h, center=true);  
+                translate([0,-frameL/3,0])
+                cylinder(d=d, h=h, center=true);
+            }
+            *translate([0,0,-8])
+            hull() {
+                translate([-frameW/2,frameL/2,0])
+                rotate([0,0,-90+angle])
+                translate([0,-ad,0])
+                cylinder(d=d, h=h, center=true);
+                translate([frameW/2,frameL/2,0])
+                rotate([0,0,90-angle])
+                translate([0,-ad,0])
+                cylinder(d=d, h=h, center=true);
+                translate([frameW/2,frameL/2,0])
+                cylinder(d=d, h=h, center=true);
+                translate([-frameW/2,frameL/2,0])
+                cylinder(d=d, h=h, center=true);
+                translate([0,frameL/3,0])
+                cylinder(d=d, h=h, center=true);
+            }
         }   
+//        translate([0,0,26]) frameContour(2); 
         openSquareTubes15(); 
-        translate([0,88,26]) 
-        cube([100,100,5], center=true);
-        translate([0,25,-5.5]) 
-        cube([10,50,5], center=true);
-        for(x = [-25,25]) for(y = [-30,30])
-        translate([x,y,-8.5])
-        rotate([0,90,0])
-        cylinder(d=1.5, h=15, center=true, $fn=20);
-        translate([0,0,8]) cylinder(d=1, h=5, center=true); 
+        translate([0,88,35.5]) 
+        cube([26,100,16], center=true);
+        translate([0,-65,20]) 
+        cube([40,10,17], center=true);
+        translate([0,65,29.5]) 
+        rotate([90,0,0]) 
+        cylinder(d=18, h=10, center=true);
+        translate([0,48,10]) 
+        cylinder(d=2, h=10, center=true);
+        translate([-15,35,10]) 
+        cylinder(d=9, h=10, center=true);
+        translate([2,-15,10]) 
+        cylinder(d=8, h=10, center=true);
+        translate([0,-26,-6]) 
+        cube([10,56,5], center=true);
+//        for(x = [-25,25]) for(y = [-30,30]) for(z = [-9.5,9.5])
+//        translate([x,y,z])
+//        rotate([0,90,0])
+//        cylinder(d=1.5, h=15, center=true, $fn=20);
+        translate([0,-14.8,0]) 
+        rotate([0,0,180])
+        pdb();
     }
 }
 
-module frameContour(h=3,d=10,ad=15) { 
+module frameContour(h=4,d=10,ad=15) { 
+    $fn=30;
     hull() {
         translate([frameW/2,frameL/2,0])
         cylinder(d=d, h=h, center=true);
@@ -160,40 +218,46 @@ module frameContour(h=3,d=10,ad=15) {
 
 module openSquareTubes15() {
     l=frameDiagonal;
-    tubeSide=15.1;
+    tubeSideZ=15;
+    tubeSideX=15.4;
     
     translate([(l+propOffset),-l,0]) 
     rotate([0,0,angle])
     translate([0,squareTubeL/2-afterMotor,0]) {
-        cube([tubeSide,squareTubeL,tubeSide], center=true);
+        cube([tubeSideX,squareTubeL,tubeSideZ], center=true);
         holes();
     }
     
     translate([-(l+propOffset),-l,0]) 
     rotate([0,0,-angle])
     translate([0,squareTubeL/2-afterMotor,0]) {
-        cube([tubeSide,squareTubeL,tubeSide], center=true);
+        cube([tubeSideX,squareTubeL,tubeSideZ], center=true);
         holes();
     }
     
     translate([-(l+propOffset),l,0]) 
     rotate([0,0,180+angle-angleOffset])
     translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0]) {
-    cube([tubeSide,squareTubeL-tubeLoffset,tubeSide], center=true);
+    cube([tubeSideX,squareTubeL-tubeLoffset,tubeSideZ], center=true);
         holes();
     }
     
     translate([(l+propOffset),l,0]) 
     rotate([0,0,-180-angle+angleOffset])
     translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0]) {
-    cube([tubeSide,squareTubeL-tubeLoffset,tubeSide], center=true); 
+    cube([tubeSideX,squareTubeL-tubeLoffset,tubeSideZ], center=true); 
         holes();
     }
     
     module holes() {
-        for(x = [-5,5]) for(y = [52,42])
-        translate([x,y,0])
-        cylinder(d=3, h=50, center=true, $fn=30);
+        for(x = [-5,5]) {
+            for(y = [52,42]) {
+                translate([x,y,0])
+                cylinder(d=3, h=50, center=true, $fn=30);
+                translate([x,52,10.5])
+                cylinder(d=6, h=2, center=true, $fn=30);
+            }
+        }
     }
 }
 
@@ -332,10 +396,16 @@ module vtxTS351() {
 
 module vtxTS5823() {
     cube([30,20,8], center=true);
+    translate([-22.5,5,0])
+    rotate([0,90,0])
+    cylinder(d=8, h=15, $fn=30, center=true); 
+    translate([-26,5,0])
+    rotate([0,90,0])
+    cylinder(d=3, h=22, $fn=30, center=true); 
 }
 
 module bec() {
-    cube([36,19,7], center=true);
+    cube([45,19,7], center=true);
 }
 
 module fpvcam() {
@@ -354,7 +424,21 @@ module cc3d() {
 }
 
 module cc3dAtom() {
-    cube([22,38,12], center=true);
+    translate([0,25,0]) 
+    cube([20,16,12], center=true);
+    hull() {
+        cube([20,34,12], center=true);
+        translate([0,-20,0]) 
+        cylinder(d=3, h=12, $fn=20, center=true); 
+    }
+    hull() {
+        translate([15,15.5,0]) 
+        cylinder(d=3, h=12, $fn=20, center=true); 
+        translate([-15,15.5,0]) 
+        cylinder(d=3, h=12, $fn=20, center=true); 
+        translate([0,-20,0]) 
+        cylinder(d=3, h=12, $fn=20, center=true); 
+    }
 }
 
 module pdb() {
@@ -368,7 +452,7 @@ module pdb() {
 
 module xt60() {
     hull() {
-        cube([15, 15, 2.6], center=true);
-        translate([0,(15-12)/2,0]) cube([15, 12, 7], center=true);
+        cube([21, 16.1, 2.6], center=true);
+        translate([0,(16.1-13.2)/2,0]) cube([21, 13.2, 8.1], center=true);
     }
 }
