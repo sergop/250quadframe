@@ -29,8 +29,8 @@ holesDR=142;
  
 m3boltHole=2.9;
  
-//quadcopter();
-frame();
+quadcopter();
+//frame();
 //        translate([0,-14.8,0]) 
 //        rotate([0,0,180])
 //        pdb();
@@ -54,32 +54,32 @@ module quadcopter() {
     color("black", 0.9)
     translate([-13.8,-28,18])
     rotate([0,0,90])
-    rx();
+    %rx();
     
     color("green", 0.9)
     translate([9,-48,23.5])
     rotate([0,0,-90])
-    vtxTS5823();
+    %vtxTS5823();
 
     color("pink", 0.9)
     translate([12,-40,15])
     rotate([0,0,90])
-    bec();
-
+    %bec();
+//
     color("grey", 0.9)
     translate([0,47,29.5])
     rotate([0,0,0])
-    fpvcam();
-    
+    %fpvcam();
+//    
 //    color("black", 0.9)
 //    translate([0,15,61])
 //    mobius();
-
-    color("yellow", 0.9)
-    translate([9,5,16])
+//
+//    color("yellow", 0.9)
+//    %translate([9,5,16])
 //    rotate([0,0,90])
 //    cc3d();
-    cc3dAtom();
+//    cc3dAtom();
 }
 
 module frame() {
@@ -92,23 +92,64 @@ module frame() {
     difference() {
         union() { 
             *difference() {
-                frameContour(15);
+                frameContour(15.7);
                 frameContour(16,6);
                 openSquareTubes15();
-                cube([500,70,16], center=true);
+                cube([500,60,16], center=true);
             }
             translate([0,0,19.5])
             difference() {
-                frameContour(16);
-                frameContour(17,6); 
+                union() {
+                    frameContour(16);
+                    hull() {
+                        translate([frameW/2+3,-5,-2]) 
+                        cylinder(d=10, h=20, center=true);
+                        translate([-frameW/2-3,-5,-2]) 
+                        cylinder(d=10, h=20, center=true);
+                    }
+                }
+                h=17;d=6;ad=15;o=9;o2=6;
+                $fn=30;
+                hull() {
+                    translate([frameW/2,frameL/2-o,0])
+                    cylinder(d=d, h=h, center=true);
+                    translate([-frameW/2,frameL/2-o,0])
+                    cylinder(d=d, h=h, center=true);
+                    
+                    translate([frameW/2-o2,frameL/2,0])
+                    cylinder(d=d, h=h, center=true);
+                    translate([-frameW/2+o2,frameL/2,0])
+                    cylinder(d=d, h=h, center=true);
+                    
+                    translate([frameW/2,-frameL/2+o,0])
+                    cylinder(d=d, h=h, center=true);
+                    translate([-frameW/2,-frameL/2+o,0])
+                    cylinder(d=d, h=h, center=true); 
+                    
+                    translate([frameW/2-o2,-frameL/2,0])
+                    cylinder(d=d, h=h, center=true);
+                    translate([-frameW/2+o2,-frameL/2,0])
+                    cylinder(d=d, h=h, center=true);   
+                }
             }
 //            translate([0,0,-9.5]) frameContour();
             translate([0,0,9.5]) frameContour(); 
-//            translate([0,0,26]) frameContour(2); 
+            
+            // top plate
+            *translate([0,0,28.5])
+            union() {
+                frameContour(2); 
+                hull() {
+                    translate([frameW/2+3,-5,0]) 
+                    cylinder(d=10, h=2, center=true);
+                    translate([-frameW/2-3,-5,0]) 
+                    cylinder(d=10, h=2, center=true);
+                }
+            }
 //            color("grey") openSquareTubes15(); 
             h=3;d=10;ad=15;
-            *translate([0,0,-8])
-            hull() {
+            translate([0,0,-8])
+            *hull() {
                 translate([-frameW/2,-frameL/2,0])
                 rotate([0,0,90-angle])
                 translate([0,ad,0])
@@ -124,8 +165,8 @@ module frame() {
                 translate([0,-frameL/3,0])
                 cylinder(d=d, h=h, center=true);
             }
-            *translate([0,0,-8])
-            hull() {
+            translate([0,0,-8])
+            *hull() {
                 translate([-frameW/2,frameL/2,0])
                 rotate([0,0,-90+angle])
                 translate([0,-ad,0])
@@ -140,30 +181,91 @@ module frame() {
                 cylinder(d=d, h=h, center=true);
                 translate([0,frameL/3,0])
                 cylinder(d=d, h=h, center=true);
+            } 
+            #translate([6,20,12.5]) {
+                translate([15.25,15.25,0]) 
+                cylinder(d=5.5, h=2, center=true);
+                translate([-15.25,15.25,0]) 
+                cylinder(d=5.5, h=2, center=true);
+                translate([15.25,-15.25,0]) 
+                cylinder(d=5.5, h=2, center=true);
+                translate([-15.25,-15.25,0]) 
+                cylinder(d=5.5, h=2, center=true);
             }
         }   
+        
+        $fn=30;
 //        translate([0,0,26]) frameContour(2); 
         openSquareTubes15(); 
+        
+        // camera slot
         translate([0,88,35.5]) 
         cube([26,100,16], center=true);
-        translate([0,-65,20]) 
-        cube([40,10,17], center=true);
+
+        // vtx and bec cooling slot
+        translate([0,-65,19.5]) 
+        cube([32,10,16], center=true);
+        
+        // camera hole
         translate([0,65,29.5]) 
         rotate([90,0,0]) 
         cylinder(d=18, h=10, center=true);
+        
+        // usb cable hole
+        translate([27,5,15]) 
+        rotate([0,90,0]) 
+        hull() {
+            translate([0,5,0]) 
+            cylinder(d=7, h=10, center=true);
+            cylinder(d=7, h=10, center=true);
+        }
+        
+        // camera mount hole
         translate([0,48,10]) 
         cylinder(d=2, h=10, center=true);
-        translate([-15,35,10]) 
-        cylinder(d=9, h=10, center=true);
-        translate([2,-15,10]) 
+        
+        // signal cable hole
+        translate([0,39,10]) 
+        cube([8,12,16], center=true);
+        
+        // power cables
+        translate([4,-17,10]) 
         cylinder(d=8, h=10, center=true);
-        translate([0,-26,-6]) 
-        cube([10,56,5], center=true);
-//        for(x = [-25,25]) for(y = [-30,30]) for(z = [-9.5,9.5])
-//        translate([x,y,z])
-//        rotate([0,90,0])
-//        cylinder(d=1.5, h=15, center=true, $fn=20);
-        translate([0,-14.8,0]) 
+        
+        // rx antenna holes
+        translate([-22,-35,30]) 
+        cylinder(d=2, h=10, center=true);
+        translate([-22,-25,30]) 
+        cylinder(d=2, h=10, center=true);    
+        
+        // extra top plate screw holes
+        translate([-frameW/2-5,-5,30]) 
+        cylinder(d=2, h=10, center=true);
+        translate([frameW/2+5,-5,30]) 
+        cylinder(d=2, h=10, center=true);
+        
+        // vtx antenna hole
+        translate([25,10,30]) 
+        cube([5,3,5], center=true); 
+        
+        // battery strap slots
+        translate([18,0,30]) 
+        cube([3,30,5], center=true);
+        translate([-18,0,30]) 
+        cube([3,30,5], center=true);
+        
+        // pdb slot
+        translate([0,-29,-6]) 
+        cube([10,56,6], center=true); 
+
+        // led holes
+        for(x = [-19,-15,-11,11,15,19])
+        translate([x,-65,-4])
+        rotate([90,0,0])
+        cylinder(d=3, h=5, center=true, $fn=30);
+        
+        // pdb
+        translate([0,-23,0]) 
         rotate([0,0,180])
         pdb();
     }
@@ -249,13 +351,18 @@ module openSquareTubes15() {
         holes();
     }
     
-    module holes() {
+    module holes() { 
+        $fn=30;
         for(x = [-5,5]) {
             for(y = [52,42]) {
                 translate([x,y,0])
-                cylinder(d=3, h=50, center=true, $fn=30);
-                translate([x,52,10.5])
-                cylinder(d=6, h=2, center=true, $fn=30);
+                cylinder(d=3, h=50, center=true);
+                translate([x,52,11])
+                cylinder(d=6, h=2, center=true);
+                translate([x,42,25.5])
+                cylinder(d=6, h=4, center=true);
+                translate([0,41,26])
+                cylinder(d=2, h=15, center=true);
             }
         }
     }
@@ -445,14 +552,14 @@ module pdb() {
     for(y = [0:10:30])
     translate([0,y,0])
     cylinder(d=10, h=14, center=true, $fn=30);
-    translate([0,43,-3.5])
+    translate([0,43,-4])
     rotate([0,0,90])
     xt60();
 }
 
 module xt60() {
     hull() {
-        cube([21, 16.1, 2.6], center=true);
-        translate([0,(16.1-13.2)/2,0]) cube([21, 13.2, 8.1], center=true);
+        cube([21, 14.5, 2.5], center=true);
+        translate([0,-(14.5-11.5)/2,0]) cube([21, 11.5, 7], center=true);
     }
 }
