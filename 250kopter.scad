@@ -27,6 +27,7 @@ escOffsetF=60.5;
 escOffsetR=66;
 propSize=6;
 propOffset=22;
+armX=3;
 
 holesDF=118;
 holesDR=142;
@@ -39,16 +40,16 @@ quadcopter();
 module quadcopter() {
 //    rotate([180,0,0])
     frame();
-    color("grey") arms(10);   
+    color("grey") arms(armX);   
     
-    translate([0,0,15]) 
+    translate([0,0,armX+armH]) 
     openMotors(28,20,propOffset);
     
     color("blue", 0.8)
     translate([0,-10,19]) 
     %battery3S2200mah();
     
-    escs(15.1);
+    escs(armX+armH);
 //    gopro();
     
     color("black", 0.9)
@@ -75,7 +76,7 @@ module quadcopter() {
 //    mobius();
 //
     color("yellow", 0.9)
-    translate([-10,20,0])
+    translate([-10,20,armX])
     rotate([0,0,180])
     %cc3dAtom(); 
 }
@@ -93,7 +94,7 @@ module frame() {
             framePlate();
             // wall
             color("grey", 0.5)
-            frameWall(2,13,3);
+            frameWall(armX,12,3);
 //            frameWall(10,5);
             framePlate(15,4);  
             // top plate
@@ -102,7 +103,7 @@ module frame() {
         
         $fn=30;
 //        translate([0,0,26]) framePlate(2); 
-        arms(10,8.5,5.1);  
+        arms(armX,8.5,5.1);  
         holes(); 
         
         // camera slot
@@ -182,7 +183,7 @@ module frame() {
     }
 }
 
-module framePlate(z=0,h=2,d=10,ad=22) { 
+module framePlate(z=0,h=3,d=10,ad=22) { 
     $fn=30;
     hull() {
         translate([frameW/2-frameWo,frameL/2,z])
