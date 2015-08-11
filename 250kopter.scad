@@ -45,31 +45,31 @@ module quadcopter() {
     translate([0,0,armX+armH]) 
     openMotors(28,20,propOffset);
     
-    color("blue", 0.8)
-    translate([0,-10,19]) 
-    %battery3S2200mah();
+//    color("blue", 0.8)
+//    translate([0,-10,19]) 
+//    %battery3S2200mah();
     
     escs(armX+armH);
 //    gopro();
     
     color("black", 0.9)
-    translate([13,-35,4])
+    translate([13,-35,armX])
     rotate([0,0,90])
     %rx();
     
     color("green", 0.9)
-    translate([15,48,4])
+    translate([15,48,armX])
     rotate([0,0,90])
     %vtxTS5823();
 
     color("pink", 0.9)
-    translate([-12,-40,4])
+    translate([-12,-40,armX])
     rotate([0,0,90])
     %bec();
 
-    color("grey", 0.9)
-    translate([0,47,19]) 
-    %fpvcam();
+//    color("grey", 0.9)
+//    translate([0,47,19]) 
+//    %fpvcam();
 //    
 //    color("black", 0.9)
 //    translate([0,15,61])
@@ -93,16 +93,11 @@ module frame() {
             // bottom plate
             framePlate();
             // wall
-            color("grey", 0.5)
+            color("grey", 0.7)
             frameWall(armX,12,3);
-//            frameWall(10,5);
-            framePlate(15,4);  
-            // top plate
-//            framePlate(20,2);  
-        }   
-        
-        $fn=30;
-//        translate([0,0,26]) framePlate(2); 
+            // top plate 
+//            framePlate(15);  
+        }    
         arms(armX,8.5,5.1);  
         holes(); 
         
