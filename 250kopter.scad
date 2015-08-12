@@ -12,7 +12,7 @@ frameWo=8;
 tubeL=100;
 armL=79;
 armH=6;
-armW=27;
+armW=28;
 afterMotor=15;
 clampHfromC=10;
 tubeToMotor=-15;
@@ -82,27 +82,18 @@ module frame() {
             framePlate();
             // wall
             color("blue")
-            frameWall(armX-0.02,2.03,3);
+            frameWall(armX-0.02,armH/2,3);
+//            color("blue")
+//            frameWall(armX+armH/2-0.02,9,3);
             // top plate 
 //            framePlate(15);  
         }    
-        arms(armX,8.5,5.1);  
+        armholes(armX,8.5,armH+0.02);  
         holes(); 
         
-        // camera slot
-//        translate([0,88,35.5]) 
-//        cube([26,100,16], center=true);
-//        translate([0,47,35.5]) 
-//        cube([29,10,16], center=true);
-
         // vtx and bec cooling slot
 //        translate([0,-65,19.5]) 
 //        cube([32,10,16], center=true);
-        
-        // camera hole
-//        translate([0,65,29.5]) 
-//        rotate([90,0,0]) 
-//        cylinder(d=18, h=10, center=true);
         
         // usb cable hole
 //        translate([30.3,3.5,15]) 
@@ -113,29 +104,11 @@ module frame() {
 //            cylinder(d=7, h=10, center=true);
 //        }
         
-        // camera mount hole
-//        translate([0,48,10]) 
-//        cylinder(d=2, h=10, center=true);
-        
-        // signal cable hole
-//        translate([0,39,10]) 
-//        cube([8,12,16], center=true);
-        
-        // power cables
-//        translate([6,-11,10]) 
-//        cylinder(d=8, h=10, center=true);
-        
         // rx antenna holes
 //        translate([-22,-35,30]) 
 //        cylinder(d=2, h=10, center=true);
 //        translate([-22,-25,30]) 
 //        cylinder(d=2, h=10, center=true);    
-        
-        // extra top plate screw holes
-//        translate([-frameW/2-5,-5,30]) 
-//        cylinder(d=2, h=10, center=true);
-//        translate([frameW/2+5,-5,30]) 
-//        cylinder(d=2, h=10, center=true);
         
         // vtx antenna hole  
 //        translate([27,5,24]) 
@@ -147,16 +120,6 @@ module frame() {
 //        cube([3,30,5], center=true);
 //        translate([-18,0,30]) 
 //        cube([3,30,5], center=true);
-        
-        // cc3d atom strap slots
-//        translate([22.5,12.5,10]) 
-//        cube([2,3,6], center=true);
-//        translate([3.5,12.5,10]) 
-//        cube([2,3,6], center=true);
-        
-        // pdb slot
-//        translate([0,-29,-6]) 
-//        cube([10,56,6], center=true); 
 
         // led holes
 //        for(x = [-19,-15,-11,11,15,19])
@@ -290,7 +253,15 @@ module arms(z=0,d=8,h=armH,w=armW) {
             } 
             th=3;
             translate([0,0,th])
-            cylinder(d=28, h=h);
+            cylinder(d=28, h=h); 
+            for(a = [45:90:360]) 
+            rotate([0,0,a])
+            hull() {
+                translate([0,8,-1])
+                cylinder(d=3, h=h);
+                translate([0,9.5,-1]) 
+                cylinder(d=3, h=h);
+            }
             hull() {
                 translate([w/2-7,20,th])
                 cylinder(d=d, h=h);
@@ -321,6 +292,45 @@ module arms(z=0,d=8,h=armH,w=armW) {
                 translate([8,armL+16,th])
                 cylinder(d=d-2, h=h); 
             }
+        }
+    }
+}
+
+module armholes(z=0,d=8,h=armH,w=armW) {
+    l=frameDiagonal; 
+    translate([(l+propOffset),-l,z]) 
+    rotate([0,0,angle])
+    arm();
+    
+    translate([-(l+propOffset),-l,z]) 
+    rotate([0,0,-angle]) 
+    arm(false);
+    
+    translate([-(l+propOffset),l,z]) 
+    rotate([0,0,180+angle-angleOffset]) 
+    arm();
+    
+    translate([(l+propOffset),l,z]) 
+    rotate([0,0,-180-angle+angleOffset]) 
+    arm(false);
+            
+    module arm(left=true) { 
+        cylinder(d=34, h=h);
+        hull() {
+            translate([w/2-4,0,0])
+            cylinder(d=d, h=h);
+            translate([-w/2+4,0,0])
+            cylinder(d=d, h=h);
+            translate([w/2-4,armL-4,0])
+            cylinder(d=d, h=h);
+            translate([-w/2+4,armL-4,0])
+            cylinder(d=d, h=h);
+            if(left)
+                translate([3,armL,0])
+                cylinder(d=d, h=h);
+            else
+                translate([-3,armL,0])
+                cylinder(d=d, h=h);
         }
     }
 }
