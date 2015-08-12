@@ -4,15 +4,15 @@ h=25;
 innerH=25;
 frameDiagonal=230/sqrt(2)/2;
 
-angle=65;
+angle=64.5;
 angleOffset=0; 
-frameL=130;
-frameArmsOffset=7.5;
-frameW=50;
-frameWo=2; 
-armL=90;
-armH=8;
-armW=28;
+frameL=113;
+frameArmsOffset=0;
+frameW=45;
+frameWo=3; 
+armL=91;
+armH=5;
+armW=27;
 afterMotor=15;
 clampHfromC=10;
 tubeToMotor=-15;
@@ -28,6 +28,7 @@ holesDR=142;
  
 m3boltHole=2.9;
  
+translate([0,0,-20])
 quadcopter();
 //color("blue", 0.1)
 //translate([0,0,999])
@@ -39,37 +40,36 @@ module quadcopter() {
     frame();
     color("grey", 0.5) arms(armX);   
     
-//    translate([0,0,armX+3]) 
-//    openMotors(28,20,propOffset);
+    translate([0,0,armX+3]) 
+    openMotors(28,20,propOffset);
     
 //    color("blue", 0.8)
-//    translate([0,-10,26]) 
-////    %battery3S2200mah();
-//    %battery3S5000mah();
+//    translate([0,-15,32]) 
+//    %battery3S2200mah();
+////    %battery3S5000mah();
     
-//    %escs(armX+3);
+    %escs(armX+3);
 //    gopro();
-//    translate([0,85,3]) 
-//    rotate([0,-20,90]) 
+//    translate([0,49,30]) 
+//    rotate([0,0,90]) 
 //    %yi();
     
     color("black", 0.9)
-    translate([0,-frameL/2+33,plateH])
+    translate([6,-frameL/2+40,plateH])
     rotate([0,0,90])
     %rx();
     
-    color("green", 0.9)
-    translate([frameW/2-frameWo-9,frameL/2-14,armX])
-    rotate([0,0,90])
-    %vtxTS5823();
+//    color("green", 0.9)
+//    translate([-8,frameL/2-35,armX])
+//    rotate([0,0,90])
+//    %vtxTS5823();
 
     color("pink")
-    translate([frameW/2-frameWo-34,-frameL/2+24,armX])
-    rotate([0,0,90])
+    translate([0,-frameL/2+81,plateH]) 
     %bec();
 
     color("grey", 0.9)
-    translate([0,47,3]) 
+    translate([0,frameL/2-15,plateH]) 
     %fpvcam();
 //    
 //    color("black", 0.9)
@@ -77,8 +77,8 @@ module quadcopter() {
 //    mobius();
 //
 //    color("yellow", 0.9)
-//    translate([0,-10,armX+11])
-//    rotate([0,0,180])
+//    translate([0,-40,armX+12])
+//    rotate([0,0,-90])
 //    %cc3d(); 
 }
 
@@ -89,12 +89,17 @@ module frame() {
             // bottom plate
             framePlate();
             // wall
-//            color("blue")
-//            frameWall(armX-0.02,armH/2,3);
-//            color("blue")
-//            frameWall(armX+armH/2-0.02,9,3);
+            color("blue")
+            frameWall(armX-0.02,armH,3);
+            *difference() {
+                framePlate(14,1);  
+                translate([0,70,14]) 
+                cube([100,100,5], center=true);
+            }
+            color("blue")
+            frameWall(armX+armH-0.02,3.02,3);
             // top plate 
-//            framePlate(45);  
+//            framePlate(29);  
         }    
         armholes(armX,8.5,armH+0.02);  
         holes(); 
@@ -134,12 +139,16 @@ module frame() {
 //        translate([x,-65,-4])
 //        rotate([90,0,0])
 //        cylinder(d=3, h=5, center=true, $fn=30); 
+     
+        #translate([0,-60.5,armX])
+        rotate([0,0,-90])
+        xt60(); 
     }
 }
 
 module framePlate(z=0,h=plateH,d=10,ad=22) { 
     $fn=30;
-    x=90;
+    x=75;
     hull() {
         translate([frameW/2-frameWo,frameL/2,z])
         cylinder(d=d, h=h);
@@ -150,6 +159,12 @@ module framePlate(z=0,h=plateH,d=10,ad=22) {
         cylinder(d=d, h=h);
         translate([-frameW/2+frameWo,-frameL/2,z])
         cylinder(d=d, h=h);   
+    }
+    hull() {
+        translate([frameW/2-frameWo+3,0,z])
+        cylinder(d=d, h=h);
+        translate([-frameW/2+frameWo-3,0,z])
+        cylinder(d=d, h=h); 
     }
     hull() {
         translate([-frameW/2,-frameL/2+frameArmsOffset,z])
@@ -242,7 +257,7 @@ module arms(z=0,d=8,h=armH,w=armW) {
     module arm(left=true) { 
         difference() {
             union() {
-                cylinder(d=34, h=h);
+                cylinder(d=34, h=8);
                 hull() {
                     translate([w/2-4,0,0])
                     cylinder(d=d, h=h);
@@ -268,7 +283,7 @@ module arms(z=0,d=8,h=armH,w=armW) {
             } 
             th=3;
             translate([0,0,th])
-            cylinder(d=28, h=h); 
+            cylinder(d=28, h=h+3); 
             for(a = [45:90:360]) 
             rotate([0,0,a])
             hull() {
@@ -295,17 +310,17 @@ module arms(z=0,d=8,h=armH,w=armW) {
             }
             if(left)
             hull() {
-                translate([1,armL-16,th])
-                cylinder(d=d-2, h=h);
+                translate([0,armL-16,th])
+                cylinder(d=7, h=h);
                 translate([-8,armL+16,th])
-                cylinder(d=d-2, h=h); 
+                cylinder(d=7, h=h); 
             }
             else 
             hull() {
-                translate([-1,armL-16,th])
-                cylinder(d=d-2, h=h);
+                translate([0,armL-16,th])
+                cylinder(d=7, h=h);
                 translate([8,armL+16,th])
-                cylinder(d=d-2, h=h); 
+                cylinder(d=7, h=h); 
             }
         }
     }
@@ -375,9 +390,14 @@ module holes() {
     translate([0,armL/2,0])
     hole(false);
     
+    translate([frameW/2-frameWo+5,0,0])
+    cylinder(d=2, h=50);
+    translate([-frameW/2+frameWo-5,0,0])
+    cylinder(d=2, h=50); 
+    
     module hole(left=true) { 
         $fn=30;
-        hd=52;
+        hd=51;
         translate([9,armL-hd,0])
         cylinder(d=3, h=50, center=true);
         translate([-9,armL-hd,0])
@@ -459,8 +479,8 @@ module openMotors(d=28,h=33,o=0) {
 }    
 
 module battery3S2200mah() {
-    translate([0,0,16.5]) 
-    cube([24,103,33], center=true);
+    translate([0,0,12]) 
+    cube([33,103,24], center=true);
 } 
 
 module battery3S5000mah() {
@@ -523,7 +543,9 @@ module mobius() {
 
 module cc3d() {
     translate([0,0,6]) 
-    cube([39,39,12], center=true);
+    cube([36,36,12], center=true);
+    #translate([-5.5,-13.5,6]) 
+    cube([11,8,12], center=true);
 }
 
 module cc3dAtom() {
@@ -556,8 +578,9 @@ module pdb() {
 }
 
 module xt60() {
+    translate([0,0,8.5/2])
     hull() {
-        cube([21, 14.5, 2.5], center=true);
-        translate([0,-(14.5-11.5)/2,0]) cube([21, 11.5, 7], center=true);
+        cube([16, 16, 3], center=true);
+        translate([0,-(16-13)/2,0]) cube([16, 13, 8.5], center=true);
     }
 }
