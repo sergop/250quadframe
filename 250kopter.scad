@@ -4,22 +4,15 @@ h=25;
 innerH=25;
 frameDiagonal=230/sqrt(2)/2;
 
-angle=69.7;
+angle=72;
 angleOffset=0; 
-frameLathW=20;
-frameLathW2=24;
-frameLathW3=15.5;
-frameL=135;
-frameW=70;
-frameWo=12;
-frontW=frameW+52;
-rearW=frameW;
+frameL=138;
+frameW=62;
+frameWo=8;
 tubeL=100;
-squareTubeL=100;
-armL=80;
-armH=5;
-armW=25;
-tubeLoffset=0;
+armL=79;
+armH=6;
+armW=27;
 afterMotor=15;
 clampHfromC=10;
 tubeToMotor=-15;
@@ -42,28 +35,28 @@ module quadcopter() {
     frame();
     color("grey") arms(armX);   
     
-    translate([0,0,armX+armH]) 
-    openMotors(28,20,propOffset);
+//    translate([0,0,armX+3]) 
+//    openMotors(28,20,propOffset);
     
 //    color("blue", 0.8)
 //    translate([0,-10,19]) 
 //    %battery3S2200mah();
     
-    escs(armX+armH);
+//    escs(armX+3);
 //    gopro();
     
     color("black", 0.9)
-    translate([13,-35,armX])
+    translate([frameW/2-frameWo-11,-frameL/2+33,armX])
     rotate([0,0,90])
     %rx();
     
     color("green", 0.9)
-    translate([15,48,armX])
+    translate([frameW/2-frameWo-9,frameL/2-14,armX])
     rotate([0,0,90])
     %vtxTS5823();
 
-    color("pink", 0.9)
-    translate([-12,-40,armX])
+    color("pink")
+    translate([frameW/2-frameWo-34,-frameL/2+24,armX])
     rotate([0,0,90])
     %bec();
 
@@ -81,20 +74,15 @@ module quadcopter() {
     %cc3dAtom(); 
 }
 
-module frame() {
-    w=frameLathW;
-    w2=frameLathW2;
-    w3=frameLathW3;
-    fw=frontW;
-    rw=rearW;
+module frame() { 
     l=frameL;
     difference() {
         union() {  
             // bottom plate
             framePlate();
             // wall
-            color("grey", 0.7)
-            frameWall(armX,12,3);
+            color("blue")
+            frameWall(armX-0.02,2.03,3);
             // top plate 
 //            framePlate(15);  
         }    
@@ -242,33 +230,7 @@ module frameWall(z=0,h=4,t=2) {
             cylinder(d=10-t*2, h=h+2);   
         }
     }
-}
-
-module openSquareTubes15() {
-    l=frameDiagonal;
-    tubeSideZ=10;
-    tubeSideX=30;
-    
-    translate([(l+propOffset),-l,0]) 
-    rotate([0,0,angle])
-    translate([0,squareTubeL/2-afterMotor,0])
-    cube([tubeSideX,squareTubeL,tubeSideZ], center=true);
-    
-    translate([-(l+propOffset),-l,0]) 
-    rotate([0,0,-angle])
-    translate([0,squareTubeL/2-afterMotor,0])
-    cube([tubeSideX,squareTubeL,tubeSideZ], center=true);
-    
-    translate([-(l+propOffset),l,0]) 
-    rotate([0,0,180+angle-angleOffset])
-    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0])
-    cube([tubeSideX,squareTubeL-tubeLoffset,tubeSideZ], center=true);
-    
-    translate([(l+propOffset),l,0]) 
-    rotate([0,0,-180-angle+angleOffset])
-    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0])
-    cube([tubeSideX,squareTubeL-tubeLoffset,tubeSideZ], center=true);
-}
+} 
 
 module arms(z=0,d=8,h=armH,w=armW) {
     l=frameDiagonal; 
@@ -291,26 +253,74 @@ module arms(z=0,d=8,h=armH,w=armW) {
             rotate([0,0,-180-angle+angleOffset]) 
             arm(false);
         }
-    holes(); 
+        
+        for(a = [l+propOffset,-l-propOffset], c = [angle,-angle]) 
+        for(b = [l,-l], c = [180+angle,-180-angle]) {
+            translate([a,b,0])  
+            rotate([0,0,c]) {
+                cylinder(d=9, h=40);
+                translate([0,0,0])  
+                cylinder(d=9, h=40);
+            }
+        }
+         
+        holes(); 
     }
             
     module arm(left=true) { 
-        cylinder(d=35, h=h);
-        hull() {
-            translate([w/2-4,0,0])
-            cylinder(d=d, h=h);
-            translate([-w/2+4,0,0])
-            cylinder(d=d, h=h);
-            translate([w/2-4,armL-5,0])
-            cylinder(d=d, h=h);
-            translate([-w/2+4,armL-5,0])
-            cylinder(d=d, h=h);
+        difference() {
+            union() {
+                cylinder(d=34, h=h);
+                hull() {
+                    translate([w/2-4,0,0])
+                    cylinder(d=d, h=h);
+                    translate([-w/2+4,0,0])
+                    cylinder(d=d, h=h);
+                    translate([w/2-4,armL-4,0])
+                    cylinder(d=d, h=h);
+                    translate([-w/2+4,armL-4,0])
+                    cylinder(d=d, h=h);
+                    if(left)
+                        translate([3,armL,0])
+                        cylinder(d=d, h=h);
+                    else
+                        translate([-3,armL,0])
+                        cylinder(d=d, h=h);
+                }
+            } 
+            th=3;
+            translate([0,0,th])
+            cylinder(d=28, h=h);
+            hull() {
+                translate([w/2-7,20,th])
+                cylinder(d=d, h=h);
+                translate([-w/2+7,20,th])
+                cylinder(d=d, h=h);
+                translate([w/2-7,armL-16,th])
+                cylinder(d=d, h=h);
+                translate([-w/2+7,armL-16,th])
+                cylinder(d=d, h=h); 
+            }
+            hull() {
+                translate([0,0,th])
+                cylinder(d=d, h=h);
+                translate([0,armL-16,th]) 
+                cylinder(d=d, h=h);
+            }
             if(left)
-            translate([5,armL,0])
-            cylinder(d=d, h=h);
-            else
-            translate([-5,armL,0])
-            cylinder(d=d, h=h);
+            hull() {
+                translate([1,armL-16,th])
+                cylinder(d=d-2, h=h);
+                translate([-8,armL+16,th])
+                cylinder(d=d-2, h=h); 
+            }
+            else 
+            hull() {
+                translate([-1,armL-16,th])
+                cylinder(d=d-2, h=h);
+                translate([8,armL+16,th])
+                cylinder(d=d-2, h=h); 
+            }
         }
     }
 }
@@ -319,39 +329,39 @@ module holes() {
     l=frameDiagonal;
     translate([(l+propOffset),-l,0]) 
     rotate([0,0,angle])
-    translate([0,squareTubeL/2-afterMotor,0])
+    translate([0,armL/2,0])
     hole();
     translate([-(l+propOffset),-l,0]) 
     rotate([0,0,-angle])
-    translate([0,squareTubeL/2-afterMotor,0]) 
+    translate([0,armL/2,0]) 
     hole(false);
     translate([-(l+propOffset),l,0]) 
     rotate([0,0,180+angle-angleOffset])
-    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0])
+    translate([0,armL/2,0])
     hole();
     translate([(l+propOffset),l,0]) 
     rotate([0,0,-180-angle+angleOffset])
-    translate([0,(squareTubeL-tubeLoffset)/2-afterMotor,0])
+    translate([0,armL/2,0])
     hole(false);
     
     module hole(left=true) { 
         $fn=30;
-                translate([7,armL-46,0])
-                cylinder(d=3, h=50, center=true);
-                translate([-7,armL-46,0])
-                cylinder(d=3, h=50, center=true);
-                if(left)
-                translate([4,armL-36,0])
-                cylinder(d=3, h=50, center=true);
-                else
-                translate([-4,armL-36,0])
-                cylinder(d=3, h=50, center=true);
-//                translate([x,52,11])
-//                cylinder(d=6, h=2, center=true);
-//                translate([x,42,25.5])
-//                cylinder(d=6, h=4, center=true);
-//                translate([0,41,26])
-//                cylinder(d=2, h=15, center=true);
+        translate([7,armL-46,0])
+        cylinder(d=3, h=50, center=true);
+        translate([-7,armL-46,0])
+        cylinder(d=3, h=50, center=true);
+        if(left) {
+            translate([2,armL-40,0])
+            cylinder(d=3, h=50, center=true);
+            translate([15,armL-37,0])
+            cylinder(d=3, h=50, center=true);
+        }
+        else {
+            translate([-2,armL-40,0])
+            cylinder(d=3, h=50, center=true); 
+            translate([-15,armL-37,0])
+            cylinder(d=3, h=50, center=true);
+        }
     }
 }
 
@@ -414,53 +424,7 @@ module openMotors(d=28,h=33,o=0) {
         translate([(frameDiagonal+o),frameDiagonal,25]) 
         cylinder(d=25.4*propSize,h=1);
     }
-} 
-
-module motorMount(angleOffset = 0) {
-    clampO=22;
-    rotate([0,0,40])
-    difference() {
-        rotate([0,0,45])
-        translate([0,0,1])
-        cube([20,20,14], center=true);
-        for(x = [-8,8])
-        translate([x,0,0])
-        cylinder(d=m3boltHole, h=55, center=true, $fn=30);
-        for(y = [-9.5,9.5])
-        translate([0,y,0])
-        cylinder(d=m3boltHole, h=55, center=true, $fn=30);
-        translate([0,y,0])
-        rotate([0,90,50])
-        cylinder(d=10, h=55, center=true, $fn=30);
-    }
-}
-
-module motorMountClamp() {
-    clampO=22;
-    difference() {
-        hull() {
-            translate([6.5,clampO,0])
-            cylinder(d=7, h=3, $fn=30);
-            translate([-6.5,clampO,0])
-            cylinder(d=7, h=3, $fn=30);
-            translate([6.5,clampO-3,0])
-            cylinder(d=7, h=3, $fn=30);
-            translate([-6.5,clampO-3,0])
-            cylinder(d=7, h=3, $fn=30);
-        }
-        translate([0,10.5,6.5])
-        rotate([-90,0,0])
-        cylinder(d=10.2, h=20, $fn=60);
-        translate([6.5,clampO,0])
-        cylinder(d=m3boltHole, h=30, center=true, $fn=30); 
-        translate([-6.5,clampO,0])
-        cylinder(d=m3boltHole, h=30, center=true, $fn=30); 
-    }
-}
-
-module battery4S5000mah() {
-    cube([45,140,44], center=true);
-}
+}    
 
 module battery3S2200mah() {
     translate([0,0,16.5]) 
@@ -483,16 +447,7 @@ module gopro() {
 module rx() {
     translate([0,0,6.5]) 
     cube([63,25,13], center=true); 
-}
-
-module vtxTS351() { 
-    cube([45,27,17], center=true);
-    translate([-62.5,7,0]) { 
-        cylinder(d=10, h=85); 
-        rotate([0,90,0])
-        cylinder(d=10, h=40); 
-    }
-}
+} 
 
 module vtxTS5823() {
     translate([0,0,4]) {
