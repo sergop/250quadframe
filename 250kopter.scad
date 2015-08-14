@@ -42,7 +42,7 @@ module quadcopter() {
 //    translate([0,0,2*(armX+2.5)]) 
 //    rotate([180,0,0]) 
     {
-//        color("grey", 0.5) arms(armX);   
+        color("grey", 0.5) arms(armX);   
         
         translate([0,0,armX+2.5]) 
         %openMotors(28,20,propOffset);
@@ -53,7 +53,7 @@ module quadcopter() {
     %battery3S2200mah();
 //    %battery3S5000mah();
     
-//    %escs(armX+3);
+    %escs(armX+3);
 //    gopro();
     translate([0,53,30.5]) 
     rotate([0,0,90]) 
@@ -93,17 +93,17 @@ module frame() {
     difference() {
         union() {  
             // bottom plate
-//            framePlate();
+            framePlate();
             // lower wall
-//            color("blue")
-//            frameWall(plateH-0.02,armH+armX-plateH);
-//            color("blue")
-//            translate([0,-54,armH/2+armX/2]) 
-//            cube([22,11,armH+armX], center=true);
-//            vaheplaat();
+            color("blue")
+            frameWall(plateH-0.02,armH+armX-plateH);
+            color("blue")
+            translate([0,-54,armH/2+armX/2]) 
+            cube([22,11,armH+armX], center=true);
+            vaheplaat();
             // upper wall
-//            color("blue") 
-//            frameWall(armX+armH,26+plateH-armH-armX); 
+            color("blue") 
+            frameWall(armX+armH,26+plateH-armH-armX); 
             // top plate 
             framePlate(plateH+26,2);  
             batterycover(plateH+26,2);
