@@ -1,3 +1,4 @@
+
 $fn=60;
 
 h=25;
@@ -27,13 +28,15 @@ holesDF=118;
 holesDR=142;
  
 m3boltHole=2.9;
- 
-//translate([0,90,0])
-quadcopter();
-color("blue", 0.1)
-translate([0,0,999])
-//cylinder(d=180, h=1);
-cube([297,210,4], center=true);
+
+
+//projection(cut = false) 
+//translate([0,10,0])
+quadcopter(); 
+//color("blue", 0.1)
+//translate([0,0,999])
+////cylinder(d=180, h=1);
+//cube([297,210,4], center=true);
 //frame(); 
 
 module quadcopter() {
@@ -43,7 +46,7 @@ module quadcopter() {
 //    translate([0,0,2*(armX+2.5)]) 
 //    rotate([180,0,0]) 
     {
-        color("grey", 0.5) arms2(armX);   
+//        color("grey", 0.5) arms2(armX);   
         
 //        translate([0,0,armX+2.5]) 
 //        %openMotors(28,20,propOffset);
@@ -60,20 +63,20 @@ module quadcopter() {
 //    rotate([0,0,90]) 
 //    %yi();
     
-    color("black", 0.9)
-    translate([9.5,-frameL/2+60,plateH])
-    rotate([0,0,90])
-    %rx();
+//    color("black", 0.9)
+//    translate([9.5,-frameL/2+60,plateH])
+//    rotate([0,0,90])
+//    %rx();
     
     color("green", 0.9)
-    translate([-8,-frameL/2+77,plateH+18])
-    rotate([0,0,180])
+    translate([2,36.5,plateH+16])
+    rotate([-90,0,180])
     %vtxTS5823();
 
-    color("pink")
-    translate([-12,-frameL/2+60,plateH]) 
-    rotate([0,0,-90])
-    %bec();
+//    color("pink")
+//    translate([-12,-frameL/2+60,plateH]) 
+//    rotate([0,0,-90])
+//    %bec();
 
     color("grey", 0.9)
     translate([0,frameL/2-15,plateH]) 
@@ -83,10 +86,10 @@ module quadcopter() {
 //    translate([0,15,61])
 //    mobius();
 //
-    color("yellow", 0.9)
-    translate([0,-39.5,plateH+12])
-    rotate([0,0,-90])
-    %cc3d(); 
+//    color("yellow", 0.9)
+//    translate([0,-39.5,plateH+12])
+//    rotate([0,0,-90])
+//    %cc3d(); 
 }
 
 module frame() { 
@@ -135,7 +138,7 @@ module frame() {
         cube([8,10,4], center=true);
         
         // vtx antenna hole
-        #translate([23,16,26]) 
+        translate([23,16,26]) 
         rotate([0,90,0])
         cylinder(d=9.5, h=5, center=true, $fn=6); 
         
@@ -153,7 +156,7 @@ module frame() {
         rotate([90,0,0])
         cylinder(d=3, h=5, center=true, $fn=30); 
      
-        #translate([0,-55,plateH])
+        translate([0,-55,plateH])
         rotate([0,0,-90])
         xt60();  
         
@@ -398,7 +401,7 @@ module arms2(z=0,d=8,h=armH,w=armW) {
             wall=2.4;
             translate([0,0,3.25])
             cylinder(d=27, h=h+1, $fn=60); 
-            translate([0,0,0.25])  
+            translate([0,0,-0.25])  
             cylinder(d=9, h=10);
             for(a = [45:180:360]) for(b = [135:180:360]) {
                 rotate([0,0,a])
@@ -466,7 +469,7 @@ module holes() {
     l=frameDiagonal;
     hd=51;
     hd2=41.5;
-    h=24;
+    h=44;
     d=2.5;
     
     translate([(l+propOffset),-l,-1]) 
@@ -484,11 +487,7 @@ module holes() {
     translate([(l+propOffset),l,-1]) 
     rotate([0,0,-180-angle+angleOffset])
     translate([0,armL/2,0])
-    hole(false);
-    
-        for(x = [-1,1]) for(y = [1,-1] )
-        translate([x*25,y*56,28]) 
-        cylinder(d=d, h=20, center=true, $fn=30); 
+    hole(false); 
         
     translate([frameW/2-frameWo+5,0,3])
     cylinder(d=d, h=h+5);
@@ -499,7 +498,7 @@ module holes() {
         $fn=30;
         for(x = [-1,1]) for(y = [40, 49.5] ) {
             translate([x*10,y,0])
-            #cylinder(d=d, h=h); 
+            cylinder(d=d, h=h); 
         }
     }
 }
@@ -600,13 +599,10 @@ module rx() {
 
 module vtxTS5823() {
     translate([0,0,4]) {
-        cube([30,27,8], center=true);
-        translate([-22.5,5,0])
+        cube([29,20,8], center=true);
+        translate([-25.5,5,0])
         rotate([0,90,0])
-        cylinder(d=8, h=15, $fn=30, center=true); 
-        translate([-26,5,0])
-        rotate([0,90,0])
-        cylinder(d=3, h=22, $fn=30, center=true); 
+        cylinder(d=8, h=22, $fn=30, center=true);  
     }
 }
 
