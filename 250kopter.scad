@@ -9,9 +9,9 @@ angle=60;
 angleOffset=0; 
 frameL=92;
 frameArmsOffset=0;
-frameW=34;
-frameWo=0; 
-armL=84;
+frameW=40;
+frameWo=3; 
+armL=88;
 armH=5;
 armW=22;
 afterMotor=15;
@@ -47,7 +47,7 @@ module quadcopter() {
 //    translate([0,0,2*(armX+2.5)]) 
 //    rotate([180,0,0]) 
     {
-        color("grey", 0.5) arms(armX);   
+        color("grey", 0.5) %arms(armX);   
         
         translate([0,0,armX+2.5]) 
         %openMotors(28,20,propOffset);
@@ -61,9 +61,9 @@ module quadcopter() {
     
     %escs(armX+armH);
 //    gopro();
-    translate([0,40,plateH+28]) 
-    rotate([0,0,90]) 
-    %yi();
+//    translate([0,40,plateH+28]) 
+//    rotate([0,0,90]) 
+//    %yi();
     
     color("black", 0.9)
     translate([0,-11,plateH])
@@ -74,7 +74,7 @@ module quadcopter() {
     %videoBlock();
     
     color("pink")
-    translate([0,10.5,plateH+11])
+    translate([0,-30,plateH+11])
     %bec();
     
 //    color("black", 0.9)
@@ -82,7 +82,7 @@ module quadcopter() {
 //    mobius();
 
     color("yellow", 0.9)
-    translate([0,-29,plateH+7])
+    translate([0,0,plateH+16])
     rotate([0,0,-90])
     %cc3d();  
     
@@ -100,7 +100,7 @@ module frame() {
 //            frameWall(plateH+0.02,26); 
         }    
         armholes(armX,8.5,armH+0.02);  
-//        holes();   
+        holes();   
         
         // usb hole
         translate([0,-60,plateH+18+2]) 
@@ -157,9 +157,9 @@ module frame() {
     }
 }
 
-module framePlate(z=0,h=plateH,d=10,ad=22) { 
+module framePlate(z=0,h=plateH,d=10,ad=15) { 
     $fn=30;
-    x=75;
+    x=55;
     hull() {
         translate([frameW/2-frameWo,frameL/2,z])
         cylinder(d=d, h=h);
@@ -171,6 +171,40 @@ module framePlate(z=0,h=plateH,d=10,ad=22) {
         translate([-frameW/2+frameWo,-frameL/2,z])
         cylinder(d=d, h=h);   
     }
+    
+    %hull() {
+        translate([-frameW/2,-frameL/2+frameArmsOffset,z])
+        rotate([0,0,90-angle])
+        translate([0,ad,0])
+        cylinder(d=d, h=h);
+        translate([frameW/2,-frameL/2+frameArmsOffset,z])
+        rotate([0,0,-90+angle])
+        translate([0,ad,0])
+        cylinder(d=d, h=h);
+        translate([frameW/2,-frameL/2+frameArmsOffset,z])
+        cylinder(d=d, h=h);
+        translate([-frameW/2,-frameL/2+frameArmsOffset,z])
+        cylinder(d=d, h=h);  
+        translate([0,-frameL/2+frameL+frameArmsOffset-x,z])
+        cylinder(d=d, h=h);
+    }
+    %hull() {
+        translate([-frameW/2,frameL/2-frameArmsOffset,z])
+        rotate([0,0,-90+angle])
+        translate([0,-ad,0])
+        cylinder(d=d, h=h);
+        translate([frameW/2,frameL/2-frameArmsOffset,z])
+        rotate([0,0,90-angle])
+        translate([0,-ad,0])
+        cylinder(d=d, h=h);
+        translate([frameW/2,frameL/2-frameArmsOffset,z])
+        cylinder(d=d, h=h);
+        translate([-frameW/2,frameL/2-frameArmsOffset,z])
+        cylinder(d=d, h=h);
+        translate([0,frameL/2-frameL-frameArmsOffset+x,z])
+        cylinder(d=d, h=h);
+    }
+    
     for(x = [1,-1]) for(y = [0,32,54,55]) 
     *hull() {
         translate([frameW/2-frameWo+3,x*y,z])
@@ -230,15 +264,16 @@ module arms(z=0,d=8,h=armH,w=armW) {
             union() {
                 translate([0,-3,0])
                 cylinder(d=38, h=h, $fn=90);  
-                hull() {
-                    x=4;
+                hull() { 
                     translate([w/2-4,0,0])
                     cylinder(d=d, h=h);
                     translate([-w/2+4,0,0])
                     cylinder(d=d, h=h);  
-                    translate([w/2-4,armL+x,0])
+                    translate([w/2-4,armL,0])
                     cylinder(d=d, h=h);
-                    translate([-w/2+4,armL+x,0])
+                    translate([-w/2+4,armL,0])
+                    cylinder(d=d, h=h);
+                    translate([0,armL+4.16,0])
                     cylinder(d=d, h=h);
                 } 
             }
@@ -276,15 +311,14 @@ module armholes(z=0,d=8,h=armH,w=armW) {
     arm();
             
     module arm() {  
-        hull() {
-            x=4;
+        hull() { 
             translate([w/2-4,0,0])
             cylinder(d=d, h=h);
             translate([-w/2+4,0,0])
             cylinder(d=d, h=h);  
-            translate([w/2-4,armL+x,0])
+            translate([w/2-4,armL,0])
             cylinder(d=d, h=h);
-            translate([-w/2+4,armL+x,0])
+            translate([-w/2+4,armL,0])
             cylinder(d=d, h=h);
         }  
         hull() {
@@ -297,39 +331,28 @@ module armholes(z=0,d=8,h=armH,w=armW) {
 }
     
 module holes() { 
-    l=frameDiagonal;
-    hd=51;
-    hd2=41.5;
+    l=frameDiagonal; 
     h=44;
     d=2.5;
     
     translate([(l+propOffset),-l,-1]) 
-    rotate([0,0,angle])
-    translate([0,armL/2,0])
+    rotate([0,0,angle]) 
     hole();
     translate([-(l+propOffset),-l,-1]) 
-    rotate([0,0,-angle])
-    translate([0,armL/2,0]) 
-    hole(false);
+    rotate([0,0,-angle]) 
+    hole();
     translate([-(l+propOffset),l,-1]) 
-    rotate([0,0,180+angle-angleOffset])
-    translate([0,armL/2,0])
+    rotate([0,0,180+angle-angleOffset]) 
     hole();
     translate([(l+propOffset),l,-1]) 
-    rotate([0,0,-180-angle+angleOffset])
-    translate([0,armL/2,0])
-    hole(false); 
-        
-    translate([frameW/2-frameWo+5,0,3])
-    cylinder(d=d, h=h+5);
-    translate([-frameW/2+frameWo-5,0,3])
-    cylinder(d=d, h=h+5); 
+    rotate([0,0,-180-angle+angleOffset]) 
+    hole();  
     
     module hole() { 
         $fn=30;
-        for(x = [-1,1]) for(y = [39, 47] ) {
+        for(x = [-1,1]) for(y = [85] ) {
             translate([x*7,y,0])
-            cylinder(d=d, h=h); 
+            #cylinder(d=d, h=h); 
         }
     }
 }
@@ -437,8 +460,8 @@ module rx() {
 module videoBlock() {
     
     color("green", 0.9)
-    translate([1.5,8,16])
-    rotate([-90,0,180])
+    translate([1.5,0,16])
+    rotate([90,90,180])
     vtxTS5823();
     
     color("grey", 0.9)
@@ -475,10 +498,16 @@ module mobius() {
 }
 
 module cc3d() {
-    translate([0,0,7]) 
-    cube([39,39,14], center=true);
-    translate([-5.5,-13.5,4]) 
-    cube([16,8,16], center=true);
+    difference() { 
+        translate([0,0,5]) 
+        cube([39,39,10], center=true); 
+        
+        for(a = [0:90:360]) {
+            rotate([0,0,a])
+            translate([15.25,15.25,-1]) 
+            cylinder(d=3.3, h=h+5); 
+        }
+    }
 }
 
 module cc3dAtom() {
