@@ -9,7 +9,7 @@ angle=60;
 angleOffset=0; 
 frameL=92;
 frameArmsOffset=0;
-frameW=42;
+frameW=34;
 frameWo=0; 
 armL=84;
 armH=5;
@@ -53,11 +53,11 @@ module quadcopter() {
         %openMotors(28,20,propOffset);
     }
     
-    color("blue", 0.8)
-    translate([0,-16,plateH+20]) 
-    %battery3S1300mah();
-//    %battery3S2200mah();
-//    %battery3S5000mah();
+//    color("blue", 0.8)
+//    translate([0,-16,plateH+20]) 
+//    %battery3S1300mah();
+////    %battery3S2200mah();
+////    %battery3S5000mah();
     
     %escs(armX+armH);
 //    gopro();
@@ -95,7 +95,7 @@ module frame() {
     l=frameL;
     difference() {
         union() { 
-            framePlate(5);  
+            framePlate();  
 //            color("blue")
 //            frameWall(plateH+0.02,26); 
         }    
@@ -241,6 +241,15 @@ module arms(z=0,d=8,h=armH,w=armW) {
                     translate([-w/2+4,armL+x,0])
                     cylinder(d=d, h=h);
                 } 
+            }
+            for(a = [45:180:360]) for(b = [135:180:360]) {
+                rotate([0,0,a])
+                translate([0,9.5,-1]) 
+                cylinder(d=3.3, h=h+5);
+
+                rotate([0,0,b])
+                translate([0,8,-1])
+                cylinder(d=3.3, h=h+5);
             }
             translate([0,0,-1])
             cylinder(d=9, h=h+2, $fn=90); 
