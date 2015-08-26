@@ -5,13 +5,13 @@ h=25;
 innerH=25;
 frameDiagonal=230/sqrt(2)/2;
 
-angle=58;
+angle=62;
 angleOffset=0; 
-frameL=92;
+frameL=98;
 frameArmsOffset=0;
 frameW=34;
 frameWo=0; 
-armL=90;
+armL=85;
 armH=5;
 armW=24;
 afterMotor=15;
@@ -23,6 +23,7 @@ propSize=6;
 propOffset=15;
 plateH=5;
 armX=5;
+mh=4.25;
 
 showProps=false;
 
@@ -65,7 +66,7 @@ module quadcopter() {
 //    rotate([0,0,90]) 
 //    %yi();
     
-    translate([0,frameL/2-20,plateH])  
+    translate([0,-frameL/2+71,plateH])  
     %buzzer();
     
     color("black", 0.9)
@@ -73,11 +74,12 @@ module quadcopter() {
     rotate([0,0,90])
     %rx();
     
-    translate([0,frameL/2-13,plateH]) 
-    %videoBlock();
+//    translate([0,frameL/2-13,plateH-2]) 
+//    rotate([15,0,0])
+//    %videoBlock();
     
     color("pink")
-    translate([0,-frameL/2+9,plateH+7])
+    translate([0,-frameL/2+13,plateH+12])
     %bec();
     
 //    color("black", 0.9)
@@ -98,21 +100,22 @@ module frame() {
     l=frameL;
     difference() {
         union() { 
-            framePlate();  
+//            %framePlate();  
 //            color("blue")
-            frameWall(plateH,6); 
+//            frameWall(plateH,2,38); 
+            rearOverhang();
+//            cameraholder();
         }    
-//        armholes(armX,8.5,armH+0.02);  
+        armholes(plateH,8.5);  
         holes();   
         
         // usb hole
-        translate([0,-60,plateH+18+2]) 
-        cube([8,10,4], center=true); 
+        translate([20,0,plateH+14]) 
+        cube([8,8,4], center=true); 
         
-        // camera strap hole
-        translate([0,65,29]) 
-        cube([30,3,4], center=true); 
-     
+        // rear overhang
+//        rearOverhang();
+        
 //        translate([0,-55,plateH])
 //        rotate([0,0,-90])
 //        xt60();  
@@ -121,52 +124,75 @@ module frame() {
 //        videoBlock();
     }
     
-    module vaheplaat() {
+    module rearOverhang() {
+//        translate([0,-42,plateH+6]) 
+//        cube([50,24,12], center=true); 
+        z=plateH;
+        h=12;
+        ad=17;
+        d=10;
+        t=2.4;
+//            translate([0,0,plateH]) 
         difference() {
-            framePlate(armX+armH,2);  
-            translate([0,54.5,armX+armH]) 
-            cube([100,100,5], center=true);
-            translate([-2,-39.5,armX+armH+2.02])
-            rotate([0,0,-90])
-            cc3d();
-        } 
+            hull() {
+                translate([-frameW/2,-frameL/2+frameArmsOffset,z])
+                rotate([0,0,90-angle])
+                translate([0,ad,0])
+                cylinder(d=d, h=h);
+                translate([frameW/2,-frameL/2+frameArmsOffset,z])
+                rotate([0,0,-90+angle])
+                translate([0,ad,0])
+                cylinder(d=d, h=h);
+                translate([frameW/2,-frameL/2+frameArmsOffset,z])
+                cylinder(d=d, h=h);
+                translate([-frameW/2,-frameL/2+frameArmsOffset,z])
+                cylinder(d=d, h=h);  
+                translate([0,-42,z+h/2]) 
+                cube([frameW,24,h], center=true); 
+            }
+            hull() {
+                translate([frameW/2-6,frameL/2,z])
+                cylinder(d=10-t*2, h=7);
+                translate([-frameW/2+6,frameL/2,z])
+                cylinder(d=10-t*2, h=7);
+                
+                translate([frameW/2-6,-frameL/2,z])
+                cylinder(d=10-t*2, h=7);
+                translate([-frameW/2+6,-frameL/2,z])
+                cylinder(d=10-t*2, h=7);   
+            }
+        }
     }
     
-    module batterycover(z=0,h=plateH,d=10) {  
-        
-        hull() {
-            translate([frameW/2,frameL/2-frameArmsOffset,z])
-            cylinder(d=d, h=h);
-            translate([-frameW/2,frameL/2-frameArmsOffset,z])
-            cylinder(d=d, h=h);
-            translate([15,frameL/2+9,z])
-            cylinder(d=d, h=h);
-            translate([-15,frameL/2+9,z])
-            cylinder(d=d, h=h);
-        }
+    module cameraholder() {
         difference() {
-            translate([0,0,plateH+27])
-            hull() {
-                translate([0,-10,0]) 
-                cube([43,100,1], center=true);
-                translate([0,-10,40]) 
-                cube([32,100,1], center=true);
-            } 
-            translate([0,-17,30.5]) 
-            battery3S2200mah();
-            translate([0,-17,40.5]) 
-            battery3S2200mah();
+            framePlate(plateH,26);  
+            translate([0,-22,25]) 
+            cube([100,100,50], center=true); 
+            rotate([15,0,0]) 
+            translate([0,1.5,15]) {
+                hull() {
+                    translate([0,41,0]) 
+                    cube([26.5,14,50], center=true); 
+                    translate([0,43,0]) 
+                    cube([23,17,50], center=true); 
+                }
+                translate([0,55,0]) 
+                cube([24,16,50], center=true); 
+                translate([0,44,-10]) 
+                #cube([28,8,7], center=true); 
+            }
         } 
-    }
+    } 
 }
 
-module framePlate(z=0,h=plateH,d=10,ad=20) { 
+module framePlate(z=0,h=plateH,lo=0,d=10,ad=17) { 
     $fn=30;
-    x=45;
+    x=50;
     hull() {
-        translate([frameW/2-frameWo,frameL/2,z])
+        translate([frameW/2-frameWo,frameL/2-lo,z])
         cylinder(d=d, h=h);
-        translate([-frameW/2+frameWo,frameL/2,z])
+        translate([-frameW/2+frameWo,frameL/2-lo,z])
         cylinder(d=d, h=h);
         
         translate([frameW/2-frameWo,-frameL/2,z])
@@ -217,15 +243,15 @@ module framePlate(z=0,h=plateH,d=10,ad=20) {
     } 
 }
 
-module frameWall(z=0,h=4,t=2.4) { 
+module frameWall(z=0,h=4,x=0,t=2.4) { 
     $fn=30;
     difference() {
-        framePlate(z,h);
+        framePlate(z,h,x);
         translate([0,0,-1])
         hull() {
-            translate([frameW/2-frameWo,frameL/2,z])
+            translate([frameW/2-frameWo,frameL/2-x,z])
             cylinder(d=10-t*2, h=h+2);
-            translate([-frameW/2+frameWo,frameL/2,z])
+            translate([-frameW/2+frameWo,frameL/2-x,z])
             cylinder(d=10-t*2, h=h+2);
             
             translate([frameW/2-frameWo,-frameL/2,z])
@@ -276,7 +302,7 @@ module arms(z=0,d=8,h=armH,w=armW) {
                     cylinder(d=d, h=h);
                     translate([-w/2+4,armL,0])
                     cylinder(d=d, h=h);
-                    translate([0,armL+5.4,0])
+                    translate([0,armL+mh,0])
                     cylinder(d=d, h=h);
                 } 
             }
@@ -323,7 +349,7 @@ module armholes(z=0,d=8,h=armH,w=armW) {
             cylinder(d=d, h=h);
             translate([-w/2+4,armL,0])
             cylinder(d=d, h=h);
-            translate([0,armL+4.16,0])
+            translate([0,armL+mh,0])
             cylinder(d=d, h=h);
         } 
     }
@@ -331,8 +357,8 @@ module armholes(z=0,d=8,h=armH,w=armW) {
     
 module holes() { 
     l=frameDiagonal; 
-    h=22;
-    d=2.5;
+    h=16;
+    d=3.3;
     
     translate([(l+propOffset),-l,-1]) 
     rotate([0,0,angle]) 
@@ -349,17 +375,17 @@ module holes() {
     
     module hole() { 
         $fn=30;
-        for(x = [-1,1]) for(y = [armL] ) {
+        #for(x = [-1,1]) for(y = [armL] ) {
             translate([x*8,y,0])
-            #cylinder(d=d, h=h); 
-            translate([0,y+5.5,0])
-            #cylinder(d=d, h=h); 
-            translate([x*8,y,10])
-            rotate([0,0,26]) 
-            %cylinder(d=6, h=3, $fn=6); 
-            translate([0,y+5.5,10])
-            rotate([0,0,26]) 
-            %cylinder(d=6, h=3, $fn=6); 
+            cylinder(d=d, h=h+20); 
+            translate([0,y+mh,0])
+            cylinder(d=d, h=h); 
+            translate([x*8,y,11])
+            rotate([0,0,30]) 
+            cylinder(d=6, h=3); 
+            translate([0,y+mh,11])
+            rotate([0,0,30]) 
+            cylinder(d=6, h=3); 
         }
     }
 }
