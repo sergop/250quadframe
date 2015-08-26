@@ -33,7 +33,7 @@ holesDR=142;
 m3boltHole=2.9;
 
 //projection(cut = false) 
-//translate([0,7,0])
+translate([0,0,-50])
 quadcopter(); 
 //color("blue", 0.1)
 //translate([0,0,999])
@@ -55,7 +55,7 @@ module quadcopter() {
     }
     
 //    color("blue", 0.8)
-//    translate([0,-frameL/2+31,plateH+28]) 
+//    translate([0,-frameL/2+34,plateH+28]) 
 //    %battery3S1300mah();
 //    %battery3S2200mah();
 //    %battery3S5000mah();
@@ -66,17 +66,17 @@ module quadcopter() {
 //    rotate([0,0,90]) 
 //    %yi();
     
-    translate([0,-frameL/2+71,plateH])  
-    %buzzer();
+    translate([0,-frameL/2+73,plateH+5])  
+    %#buzzer();
     
     color("black", 0.9)
     translate([0,-frameL/2+30,plateH])
     rotate([0,0,90])
     %rx();
     
-//    translate([0,frameL/2-13,plateH-2]) 
-//    rotate([15,0,0])
-//    %videoBlock();
+    translate([0,frameL/2-11,plateH-2]) 
+    rotate([15,0,0])
+    %videoBlock();
     
     color("pink")
     translate([0,-frameL/2+13,plateH+12])
@@ -87,7 +87,7 @@ module quadcopter() {
 //    mobius();
 
     color("yellow", 0.9)
-    translate([0,-frameL/2+42.5,plateH+16])
+    translate([0,-frameL/2+45,plateH+16])
     rotate([0,0,-90])
     %cc3d();  
     
@@ -100,39 +100,37 @@ module frame() {
     l=frameL;
     difference() {
         union() { 
-//            %framePlate();  
+            %framePlate();  
 //            color("blue")
-//            frameWall(plateH,2,38); 
-            rearOverhang();
+            frameWall(plateH,26,36); 
+//            rearOverhang();
 //            cameraholder();
+//            topPlate();  
         }    
         armholes(plateH,8.5);  
         holes();   
         
         // usb hole
-        translate([20,0,plateH+14]) 
-        cube([8,8,4], center=true); 
+        translate([20,-frameL/2+45,plateH+14]) 
+        #cube([8,8,4], center=true); 
         
         // rear overhang
-//        rearOverhang();
-        
-//        translate([0,-55,plateH])
-//        rotate([0,0,-90])
-//        xt60();  
+        rearOverhang();
+            
+        translate([-25,0,plateH])
+        rotate([0,0,0])
+        %xt60();  
         
 //        translate([0,22,plateH]) 
 //        videoBlock();
     }
     
     module rearOverhang() {
-//        translate([0,-42,plateH+6]) 
-//        cube([50,24,12], center=true); 
         z=plateH;
         h=12;
         ad=17;
         d=10;
         t=2.4;
-//            translate([0,0,plateH]) 
         difference() {
             hull() {
                 translate([-frameW/2,-frameL/2+frameArmsOffset,z])
@@ -167,10 +165,10 @@ module frame() {
     module cameraholder() {
         difference() {
             framePlate(plateH,26);  
-            translate([0,-22,25]) 
+            translate([0,-19.5,25]) 
             cube([100,100,50], center=true); 
             rotate([15,0,0]) 
-            translate([0,1.5,15]) {
+            translate([0,4,15]) {
                 hull() {
                     translate([0,41,0]) 
                     cube([26.5,14,50], center=true); 
@@ -182,6 +180,40 @@ module frame() {
                 translate([0,44,-10]) 
                 #cube([28,8,7], center=true); 
             }
+        } 
+    } 
+    
+    module topPlate() {
+        d=10;
+        h=3;
+        z=plateH+26;
+        difference() {
+            union() {
+                hull() {
+                    translate([frameW/2-frameWo,frameL/2,z])
+                    cylinder(d=d, h=h);
+                    translate([-frameW/2+frameWo,frameL/2,z])
+                    cylinder(d=d, h=h);
+                    
+                    translate([frameW/2-frameWo,-frameL/2,z])
+                    cylinder(d=d, h=h);
+                    translate([-frameW/2+frameWo,-frameL/2,z])
+                    cylinder(d=d, h=h);   
+                }        
+                hull() {
+                    h=25;    
+                    x=29;
+                    translate([frameW/2-frameWo,frameL/2-x,z])
+                    cylinder(d=d, h=h);
+                    translate([-frameW/2+frameWo,frameL/2-x,z])
+                    cylinder(d=d, h=h);
+                    
+                    translate([frameW/2-frameWo,-frameL/2,z])
+                    cylinder(d=d, h=h);
+                    translate([-frameW/2+frameWo,-frameL/2,z])
+                    cylinder(d=d, h=h);   
+                } 
+            } 
         } 
     } 
 }
@@ -368,24 +400,43 @@ module holes() {
     hole();
     translate([-(l+propOffset),l,-1]) 
     rotate([0,0,180+angle-angleOffset]) 
-    hole();
+    hole2();
     translate([(l+propOffset),l,-1]) 
     rotate([0,0,-180-angle+angleOffset]) 
-    hole();  
+    hole2();  
     
     module hole() { 
         $fn=30;
-        #for(x = [-1,1]) for(y = [armL] ) {
-            translate([x*8,y,0])
-            cylinder(d=d, h=h+20); 
-            translate([0,y+mh,0])
-            cylinder(d=d, h=h); 
+        translate([0,armL+mh,0])
+        *cylinder(d=d, h=h+20); 
+        for(x = [-1,1]) for(y = [armL] ) {
             translate([x*8,y,11])
             rotate([0,0,30]) 
             cylinder(d=6, h=3); 
             translate([0,y+mh,11])
             rotate([0,0,30]) 
             cylinder(d=6, h=3); 
+        }
+        #for(x = [-1,1]) for(y = [armL] ) {
+            translate([x*8,y,0])
+            cylinder(d=d, h=h+20);  
+        }
+    }
+    module hole2() { 
+        $fn=30;
+        translate([0,armL+mh,0])
+        #cylinder(d=d, h=h+20); 
+        for(x = [-1,1]) for(y = [armL] ) {
+            translate([x*8,y,11])
+            rotate([0,0,30]) 
+            cylinder(d=6, h=3); 
+            translate([0,y+mh,11])
+            rotate([0,0,30]) 
+            cylinder(d=6, h=3); 
+        }
+        *for(x = [-1,1]) for(y = [armL] ) {
+            translate([x*8,y,0])
+            cylinder(d=d, h=h+20);  
         }
     }
 }
@@ -538,9 +589,10 @@ module mobius() {
 }
 
 module cc3d() {
+    side=36;
     difference() { 
         translate([0,0,5]) 
-        cube([39,39,10], center=true); 
+        cube([side,side,10], center=true); 
         
         for(a = [0:90:360]) {
             rotate([0,0,a])
